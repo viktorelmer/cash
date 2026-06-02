@@ -1,4 +1,4 @@
-import { Bot, ExternalLink, HardDrive, Wifi } from "lucide-react";
+import { Bot, ExternalLink, HardDrive, Scale, Wifi } from "lucide-react";
 import { BottomSheet } from "@/components/ui/bottom-sheet";
 import { Button } from "@/components/ui/button";
 import { useSettings } from "@/stores/useSettings";
@@ -62,7 +62,13 @@ export function DisclaimerSheet({ open, onAccepted }: DisclaimerSheetProps) {
             <Wifi className="mt-0.5 h-4 w-4 shrink-0 text-foreground" />
             <span>{t("disclaimer.point_network")}</span>
           </li>
+          <li className="flex gap-3">
+            <Scale className="mt-0.5 h-4 w-4 shrink-0 text-foreground" />
+            <span>{t("disclaimer.point_acceptance")}</span>
+          </li>
         </ul>
+
+        <p className="text-xs text-muted-foreground">{t("disclaimer.accept_note")}</p>
 
         <Button className="w-full" onClick={handleAccept}>
           {t("disclaimer.accept")}

@@ -9,8 +9,8 @@ export interface LanguageOption {
 }
 
 export const LANGUAGES: LanguageOption[] = [
-  { value: "en", label: "English", nativeLabel: "English" },
   { value: "be", label: "Belarusian", nativeLabel: "Беларускі" },
+  { value: "en", label: "English", nativeLabel: "English" },
   { value: "ru", label: "Russian", nativeLabel: "Русский" },
 ];
 

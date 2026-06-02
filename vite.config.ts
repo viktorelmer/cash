@@ -3,7 +3,12 @@ import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
 import path from "node:path";
 
+const repoName = process.env.GITHUB_REPOSITORY?.split("/")[1] ?? "cash";
+const ghPagesBase =
+  process.env.GITHUB_PAGES === "true" ? `/${repoName}/` : "/";
+
 export default defineConfig({
+  base: ghPagesBase,
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
@@ -27,8 +32,8 @@ export default defineConfig({
         background_color: "#fafafa",
         display: "standalone",
         orientation: "portrait",
-        scope: "/",
-        start_url: "/",
+        scope: ghPagesBase,
+        start_url: ghPagesBase,
         icons: [
           {
             src: "/icons/icon.svg",

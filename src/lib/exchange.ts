@@ -11,6 +11,7 @@ export const SUPPORTED_CURRENCIES: Currency[] = [
   "SEK",
   "NOK",
   "BYN",
+  "RUB",
 ];
 
 const RATES_TTL_MS = 24 * 60 * 60 * 1000;

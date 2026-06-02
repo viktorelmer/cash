@@ -128,7 +128,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   id: "settings",
   currency: "EUR",
   theme: "system",
-  language: "en",
+  language: "be",
   defaultTaxRate: 0,
   weekStartsOn: 1,
   notificationsEnabled: false,

@@ -12,14 +12,15 @@ import { useT } from "@/i18n";
 import type { Currency } from "@/types";
 
 const CURRENCIES: { value: Currency; label: string }[] = [
+  { value: "BYN", label: "BYN · Б" },
   { value: "EUR", label: "EUR · €" },
   { value: "USD", label: "USD · $" },
+  { value: "RUB", label: "RUB · Р" },
   { value: "GBP", label: "GBP · £" },
   { value: "PLN", label: "PLN · zł" },
   { value: "CHF", label: "CHF" },
   { value: "SEK", label: "SEK · kr" },
   { value: "NOK", label: "NOK · kr" },
-  { value: "BYN", label: "BYN · Б" },
 ];
 
 interface CurrencySelectorProps {

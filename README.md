@@ -4,6 +4,8 @@
 
 **Языки интерфейса:** English, Русский, Беларуская.
 
+**Демо:** [viktorelmer.github.io/cash](https://viktorelmer.github.io/cash/)
+
 ---
 
 ## Возможности
@@ -93,6 +95,21 @@ npm run dev
 ```bash
 npm run build
 npm run preview
+```
+
+### GitHub Pages
+
+Деплой настроен через GitHub Actions (`.github/workflows/deploy-pages.yml`).
+
+1. В репозитории: **Settings → Pages → Build and deployment → Source: GitHub Actions**
+2. Push в `main` — workflow соберёт и опубликует сайт
+3. URL: `https://<username>.github.io/cash/`
+
+Локальная проверка сборки для Pages:
+
+```bash
+GITHUB_PAGES=true npm run build
+npx serve dist
 ```
 
 Опционально: URL репозитория для ссылки в приложении задаётся через `VITE_REPOSITORY_URL` в `.env`.

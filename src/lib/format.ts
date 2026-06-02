@@ -9,6 +9,7 @@ const symbolMap: Record<Currency, string> = {
   SEK: "kr",
   NOK: "kr",
   BYN: "Br",
+  RUB: "₽",
 };
 
 export function currencySymbol(currency: Currency): string {

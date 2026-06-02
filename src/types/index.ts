@@ -1,6 +1,6 @@
 export type ID = string;
 
-export type Currency = "EUR" | "USD" | "GBP" | "PLN" | "CHF" | "SEK" | "NOK" | "BYN";
+export type Currency = "EUR" | "USD" | "GBP" | "PLN" | "CHF" | "SEK" | "NOK" | "BYN" | "RUB";
 
 export type ThemePreference = "system" | "light" | "dark";
 

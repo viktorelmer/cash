@@ -26,28 +26,33 @@ function PageFallback() {
   );
 }
 
-export const router = createBrowserRouter([
+export const router = createBrowserRouter(
+  [
+    {
+      path: "/",
+      element: <AppShell />,
+      children: [
+        { index: true, element: <DashboardPage /> },
+        { path: "expenses", element: <ExpensesPage /> },
+        { path: "goals", element: <GoalsPage /> },
+        { path: "subscriptions", element: <SubscriptionsPage /> },
+        {
+          path: "analytics",
+          element: (
+            <Suspense fallback={<PageFallback />}>
+              <AnalyticsPage />
+            </Suspense>
+          ),
+        },
+        { path: "income", element: <IncomePage /> },
+        { path: "budget", element: <BudgetPage /> },
+        { path: "categories", element: <CategoriesPage /> },
+        { path: "settings", element: <SettingsPage /> },
+        { path: "*", element: <Navigate to="/" replace /> },
+      ],
+    },
+  ],
   {
-    path: "/",
-    element: <AppShell />,
-    children: [
-      { index: true, element: <DashboardPage /> },
-      { path: "expenses", element: <ExpensesPage /> },
-      { path: "goals", element: <GoalsPage /> },
-      { path: "subscriptions", element: <SubscriptionsPage /> },
-      {
-        path: "analytics",
-        element: (
-          <Suspense fallback={<PageFallback />}>
-            <AnalyticsPage />
-          </Suspense>
-        ),
-      },
-      { path: "income", element: <IncomePage /> },
-      { path: "budget", element: <BudgetPage /> },
-      { path: "categories", element: <CategoriesPage /> },
-      { path: "settings", element: <SettingsPage /> },
-      { path: "*", element: <Navigate to="/" replace /> },
-    ],
+    basename: import.meta.env.BASE_URL.replace(/\/$/, "") || undefined,
   },
-]);
+);

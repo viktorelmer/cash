@@ -517,7 +517,11 @@ export const en = {
       "All your data stays on this device only. Nothing is sent to our servers — there are no servers.",
     point_network:
       "The only network request is fetching public exchange rates (Frankfurter API) when you refresh currencies.",
-    accept: "I understand",
+    point_acceptance:
+      "The app may contain bugs or inaccuracies. By continuing, you confirm that you understand this is an AI-built project and you have no claims against the developer.",
+    accept_note:
+      "Tapping the button below means you agree to the above.",
+    accept: "I agree",
   },
   wallet: {
     on_hand: "on hand",
