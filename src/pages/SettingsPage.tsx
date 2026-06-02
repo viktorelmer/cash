@@ -2,11 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   AlertTriangle,
-  ChevronDown,
   ChevronRight,
   DatabaseBackup,
   Download,
-  Globe,
   Info,
   Moon,
   Percent,
@@ -25,21 +23,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { CurrencySelector } from "@/components/shared/CurrencySelector";
+import { LanguageSelector } from "@/components/shared/LanguageSelector";
 import { ExchangeRatesPreview } from "@/components/shared/ExchangeRatesPreview";
 import { useWalletBalance } from "@/hooks/useWalletBalance";
 import { useSettings } from "@/stores/useSettings";
 import { useFormatMoney, useT } from "@/i18n";
 import { downloadBackup, importBackup, resetDatabase } from "@/lib/db";
 import type { ThemePreference } from "@/types";
-import { LANGUAGES } from "@/i18n";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -243,36 +234,10 @@ export function SettingsPage() {
           </SettingRow>
 
           <SettingRow label={t("settings.language")}>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-xs font-medium"
-                >
-                  <Globe className="h-3.5 w-3.5" />
-                  {LANGUAGES.find((l) => l.value === settings.language)
-                    ?.nativeLabel ?? settings.language}
-                  <ChevronDown className="h-3 w-3" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>
-                  {t("settings.language")}
-                </DropdownMenuLabel>
-                {LANGUAGES.map((lang) => (
-                  <DropdownMenuItem
-                    key={lang.value}
-                    onClick={() => setLanguage(lang.value)}
-                    className={cn(
-                      settings.language === lang.value && "font-semibold",
-                    )}
-                  >
-                    {lang.nativeLabel}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <LanguageSelector
+              value={settings.language}
+              onValueChange={setLanguage}
+            />
           </SettingRow>
 
           <SettingRow label={t("settings.week_starts_on")}>
@@ -447,8 +412,8 @@ function SettingRow({
 }) {
   return (
     <div className="flex items-center justify-between gap-3">
-      <span className="text-sm font-medium">{label}</span>
-      {children}
+      <span className="min-w-0 flex-1 text-sm font-medium">{label}</span>
+      <div className="shrink-0">{children}</div>
     </div>
   );
 }
