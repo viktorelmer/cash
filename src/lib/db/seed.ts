@@ -126,7 +126,7 @@ const SEED_CATEGORIES: SeedCategorySpec[] = [
 /** Neutral defaults for a fresh install — no locale- or brand-specific values. */
 export const DEFAULT_SETTINGS: AppSettings = {
   id: "settings",
-  currency: "EUR",
+  currency: "BYN",
   theme: "system",
   language: "be",
   defaultTaxRate: 0,
