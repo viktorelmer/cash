@@ -99,13 +99,17 @@ npm run preview
 
 ### GitHub Pages
 
-Деплой настроен через GitHub Actions (`.github/workflows/deploy-pages.yml`).
+Деплой: push в `main` → GitHub Actions собирает `dist` и публикует его.
 
-1. В репозитории: **Settings → Pages → Build and deployment → Source: GitHub Actions**
-2. Push в `main` — workflow соберёт и опубликует сайт
+1. **Settings → Pages → Build and deployment**
+2. Выберите один из вариантов:
+   - **Source: GitHub Actions** (рекомендуется), или
+   - **Source: Deploy from branch → `gh-pages` → `/ (root)`**
 3. URL: `https://<username>.github.io/cash/`
 
-Локальная проверка сборки для Pages:
+> Если видите пустую страницу — скорее всего Pages отдаёт исходники из `main`, а не сборку. Переключите источник на **GitHub Actions** или ветку **`gh-pages`**.
+
+Локальная проверка:
 
 ```bash
 GITHUB_PAGES=true npm run build

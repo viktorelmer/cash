@@ -36,13 +36,13 @@ export default defineConfig({
         start_url: ghPagesBase,
         icons: [
           {
-            src: "/icons/icon.svg",
+            src: `${ghPagesBase}icons/icon.svg`.replace(/\/{2,}/g, "/"),
             sizes: "any",
             type: "image/svg+xml",
             purpose: "any",
           },
           {
-            src: "/icons/icon.svg",
+            src: `${ghPagesBase}icons/icon.svg`.replace(/\/{2,}/g, "/"),
             sizes: "any",
             type: "image/svg+xml",
             purpose: "maskable",
