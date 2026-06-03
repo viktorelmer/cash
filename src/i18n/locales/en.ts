@@ -486,6 +486,11 @@ export const en = {
     reset_button: "Reset",
     reset_confirm:
       "This will permanently delete all your data and reseed defaults. Continue?",
+    section_about: "About",
+    copyright: "© {year} {creator}",
+    created_by: "Creator",
+    created_by_text: "AI but controlled by",
+    source_code: "Source code",
     privacy_footer: "Offline-first PWA · stored on your device only",
     toast_baseline_updated: "Baseline updated",
     toast_rates_updated: "Exchange rates updated",

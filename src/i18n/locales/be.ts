@@ -492,6 +492,11 @@ export const be: EnglishDictionary = {
     reset_button: "Скінуць",
     reset_confirm:
       "Гэта назаўсёды выдаліць усе вашы дадзеныя і верне стандартныя. Працягнуць?",
+    section_about: "Пра праграму",
+    copyright: "© {year} {creator}",
+    created_by: "Аўтар",
+    created_by_text: "ІІ але пад кантролем",
+    source_code: "Зыходны код",
     privacy_footer: "PWA з лакальным захаваннем · толькі на вашай прыладзе",
     toast_baseline_updated: "Кропку адсчёту абноўлена",
     toast_rates_updated: "Курсы валют абноўлены",

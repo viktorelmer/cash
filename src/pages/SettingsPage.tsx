@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import {
   AlertTriangle,
+  Code2,
   DatabaseBackup,
   Download,
+  ExternalLink,
   Info,
   Moon,
   Percent,
@@ -12,6 +14,7 @@ import {
   Sun,
   Trash2,
   Upload,
+  User,
   Wallet,
 } from "lucide-react";
 import { PageHeader } from "@/components/layout/PageHeader";
@@ -27,6 +30,11 @@ import { useWalletBalance } from "@/hooks/useWalletBalance";
 import { useSettings } from "@/stores/useSettings";
 import { useFormatMoney, useT } from "@/i18n";
 import { downloadBackup, importBackup, resetDatabase } from "@/lib/db";
+import {
+  CREATOR_GITHUB_URL,
+  CREATOR_NAME,
+  REPOSITORY_URL,
+} from "@/lib/appMeta";
 import type { ThemePreference } from "@/types";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -354,10 +362,57 @@ export function SettingsPage() {
         </CardContent>
       </Card>
 
-      <div className="text-center text-xs text-muted-foreground py-4 flex items-center justify-center gap-1.5">
-        <Info className="h-3 w-3" />
-        {t("settings.privacy_footer")}
-      </div>
+      <Card>
+        <CardContent className="p-5 space-y-3">
+          <SectionHeading icon={Info} title={t("settings.section_about")} />
+          <p className="text-sm text-muted-foreground">
+            {t("settings.copyright", {
+              year: new Date().getFullYear(),
+              creator: CREATOR_NAME,
+            })}
+          </p>
+          <div className="space-y-2 text-sm">
+            <a
+              href={CREATOR_GITHUB_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 rounded-xl p-3 tap hover:bg-secondary/50"
+            >
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted">
+                <User className="h-4 w-4" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="font-medium">{t("settings.created_by")}</div>
+                <div className="text-xs text-muted-foreground">
+                  {t("settings.created_by_text")} {CREATOR_NAME}
+                </div>
+              </div>
+              <ExternalLink className="h-4 w-4 shrink-0 text-muted-foreground" />
+            </a>
+            <a
+              href={REPOSITORY_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 rounded-xl p-3 tap hover:bg-secondary/50"
+            >
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted">
+                <Code2 className="h-4 w-4" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="font-medium">{t("settings.source_code")}</div>
+                <div className="truncate text-xs text-muted-foreground">
+                  {REPOSITORY_URL.replace(/^https?:\/\//, "")}
+                </div>
+              </div>
+              <ExternalLink className="h-4 w-4 shrink-0 text-muted-foreground" />
+            </a>
+          </div>
+          <p className="text-xs text-muted-foreground flex items-center gap-1.5">
+            <Info className="h-3 w-3 shrink-0" />
+            {t("settings.privacy_footer")}
+          </p>
+        </CardContent>
+      </Card>
     </div>
   );
 }

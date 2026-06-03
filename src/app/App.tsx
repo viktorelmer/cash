@@ -3,6 +3,7 @@ import { RouterProvider } from "react-router-dom";
 import { Toaster } from "sonner";
 import { router } from "./router";
 import { seedDatabaseIfEmpty } from "@/lib/db";
+import { DisclaimerSheet } from "@/features/onboarding/DisclaimerSheet";
 import { useSettings } from "@/stores/useSettings";
 import { useApplyTheme } from "@/hooks/useTheme";
 import { useT } from "@/i18n";
@@ -11,6 +12,9 @@ import { Wallet } from "lucide-react";
 export function App() {
   const [ready, setReady] = useState(false);
   const hydrate = useSettings((s) => s.hydrate);
+  const disclaimerAcceptedAt = useSettings(
+    (s) => s.settings.disclaimerAcceptedAt,
+  );
   const refreshExchangeRatesIfStale = useSettings(
     (s) => s.refreshExchangeRatesIfStale,
   );
@@ -32,6 +36,28 @@ export function App() {
   }, [hydrate, refreshExchangeRatesIfStale]);
 
   if (!ready) return <Splash />;
+
+  if (!disclaimerAcceptedAt) {
+    return (
+      <>
+        <div className="min-h-dvh bg-background">
+          <DisclaimerSheet open onAccepted={() => {}} />
+        </div>
+        <Toaster
+          theme="system"
+          position="top-center"
+          toastOptions={{
+            classNames: {
+              toast:
+                "rounded-2xl border border-border shadow-pop bg-elevated text-foreground",
+              title: "text-sm font-medium",
+              description: "text-xs text-muted-foreground",
+            },
+          }}
+        />
+      </>
+    );
+  }
 
   return (
     <>

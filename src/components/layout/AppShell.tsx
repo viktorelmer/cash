@@ -13,7 +13,6 @@ import { cn } from "@/lib/utils";
 import { FloatingAddButton } from "@/components/shared/FloatingAddButton";
 import { AddExpenseSheet } from "@/features/expenses/AddExpenseSheet";
 import { OnboardingSheet } from "@/features/onboarding/OnboardingSheet";
-import { DisclaimerSheet } from "@/features/onboarding/DisclaimerSheet";
 import { useSettings } from "@/stores/useSettings";
 import { useT } from "@/i18n";
 import { TopBar } from "./TopBar";
@@ -21,19 +20,14 @@ import { TopBar } from "./TopBar";
 export function AppShell() {
   const t = useT();
   const { pathname } = useLocation();
-  const disclaimerAcceptedAt = useSettings(
-    (s) => s.settings.disclaimerAcceptedAt,
-  );
   const onboardingCompletedAt = useSettings(
     (s) => s.settings.onboardingCompletedAt,
   );
-  const [showDisclaimer, setShowDisclaimer] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
 
   useEffect(() => {
-    setShowDisclaimer(!disclaimerAcceptedAt);
-    setShowOnboarding(!!disclaimerAcceptedAt && !onboardingCompletedAt);
-  }, [disclaimerAcceptedAt, onboardingCompletedAt]);
+    setShowOnboarding(!onboardingCompletedAt);
+  }, [onboardingCompletedAt]);
   const basicsPaths = ["/basics", "/budget", "/categories"];
 
   const tabs = [
@@ -71,13 +65,6 @@ export function AppShell() {
 
       <FloatingAddButton />
       <AddExpenseSheet />
-      <DisclaimerSheet
-        open={showDisclaimer}
-        onAccepted={() => {
-          setShowDisclaimer(false);
-          if (!onboardingCompletedAt) setShowOnboarding(true);
-        }}
-      />
       <OnboardingSheet
         open={showOnboarding}
         onComplete={() => setShowOnboarding(false)}

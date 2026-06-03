@@ -451,7 +451,7 @@ export const ru: EnglishDictionary = {
     exchange_rates_refresh: "Обновить курсы валют",
     exchange_rates_caption:
       "Расходы и доходы в других валютах пересчитываются в основную для итогов и баланса.",
-    exchange_rates_preview: "Текущие курсы (1 {base} =)",
+    exchange_rates_preview: "Текущие курсы (за 1 {base})",
     exchange_rates_help: {
       title: "О курсах валют",
       aria_label: "О курсах валют",
@@ -491,6 +491,11 @@ export const ru: EnglishDictionary = {
     reset_button: "Сбросить",
     reset_confirm:
       "Это навсегда удалит все ваши данные и вернёт стандартные. Продолжить?",
+    section_about: "О приложении",
+    copyright: "© {year} {creator}",
+    created_by: "Создатель",
+    created_by_text: "ИИ но под контролем",
+    source_code: "Исходный код",
     privacy_footer: "PWA с локальным хранением · только на вашем устройстве",
     toast_baseline_updated: "Точка отсчёта обновлена",
     toast_rates_updated: "Курсы валют обновлены",

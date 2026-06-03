@@ -34,10 +34,6 @@ export const useSettings = create<SettingsState>((set, get) => ({
   hydrate: async () => {
     const persisted = await db.settings.get("settings");
     const merged = { ...DEFAULT_SETTINGS, ...(persisted ?? {}) };
-    if (merged.onboardingCompletedAt && !merged.disclaimerAcceptedAt) {
-      merged.disclaimerAcceptedAt = merged.onboardingCompletedAt;
-      await db.settings.put({ ...merged, id: "settings" });
-    }
     set({
       settings: merged,
       hydrated: true,
