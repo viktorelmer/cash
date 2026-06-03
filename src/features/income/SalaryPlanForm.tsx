@@ -10,10 +10,13 @@ import { TaxCalculator } from "@/components/shared/TaxCalculator";
 import { useFormatMoney, useT } from "@/i18n";
 import type { Currency, SalaryPart, SalaryPlan } from "@/types";
 import { cn } from "@/lib/utils";
+import { SalaryPartFormula } from "./SalaryPartFormula";
 import {
   DEFAULT_SALARY_PARTS,
   calculateSalaryPart,
   nextPaymentDateFor,
+  normalizeSalaryPlan,
+  planMonthlyGross,
   type SalaryPlanDraft,
 } from "./salaryPlan";
 
@@ -52,11 +55,13 @@ export function SalaryPlanForm({
   );
   const [note, setNote] = useState(initial?.note ?? "");
   const [active, setActive] = useState(initial?.active ?? true);
-  const [parts, setParts] = useState<SalaryPart[]>(
-    initial?.parts && initial.parts.length > 0
-      ? initial.parts
-      : DEFAULT_SALARY_PARTS,
-  );
+  const [parts, setParts] = useState<SalaryPart[]>(() => {
+    const base =
+      initial?.parts && initial.parts.length > 0
+        ? initial.parts
+        : DEFAULT_SALARY_PARTS;
+    return initial ? normalizeSalaryPlan({ ...initial, parts: base }).parts : base;
+  });
 
   const numericMonthly = Number(monthly) || 0;
   const canSubmit = numericMonthly > 0 && parts.length > 0;
@@ -107,18 +112,19 @@ export function SalaryPlanForm({
             placeholder={t("salary_plan.placeholder_name")}
           />
         </div>
-        <div>
+        <div className="col-span-2">
           <Label>{t("salary_plan.label_monthly")}</Label>
           <Input
             className="mt-2"
             type="number"
             inputMode="decimal"
+            min={0}
             value={monthly}
             onChange={(e) => setMonthly(e.target.value)}
             placeholder={t("salary_plan.placeholder_monthly")}
           />
         </div>
-        <div>
+        <div className="col-span-2">
           <Label>{t("salary_plan.label_currency")}</Label>
           <div className="mt-2">
             <CurrencySelector value={currency} onValueChange={setCurrency} />
@@ -156,7 +162,7 @@ export function SalaryPlanForm({
       </div>
 
       <TaxCalculator
-        gross={numericMonthly}
+        gross={planMonthlyGross(planForPreview)}
         enabled={taxEnabled}
         onEnabledChange={setTaxEnabled}
         taxRate={taxRate}
@@ -182,7 +188,8 @@ export function SalaryPlanForm({
               : t("salary_plan.paused")}
           </div>
           <div className="text-xs text-muted-foreground">
-            {formatMoney(numericMonthly, currency)} / {t("subscriptions.monthly").toLowerCase()}
+            {formatMoney(planMonthlyGross(planForPreview), currency)} /{" "}
+            {t("subscriptions.monthly").toLowerCase()}
           </div>
         </div>
         <Switch checked={active} onCheckedChange={setActive} />
@@ -347,13 +354,33 @@ function PartEditor({ index, part, plan, onChange }: PartEditorProps) {
             }
           />
         </div>
+        <div className="col-span-2">
+          <Label>{t("salary_plan.label_part_bonus")}</Label>
+          <Input
+            className="mt-2"
+            type="number"
+            inputMode="decimal"
+            min={0}
+            value={part.bonusAmount ? String(part.bonusAmount) : ""}
+            onChange={(e) =>
+              onChange({
+                bonusAmount: Math.max(0, Number(e.target.value) || 0),
+              })
+            }
+            placeholder={t("salary_plan.placeholder_bonus")}
+          />
+          <p className="mt-1 text-[11px] text-muted-foreground">
+            {t("salary_plan.part_bonus_hint")}
+          </p>
+        </div>
       </div>
 
-      <div className="rounded-xl bg-muted/40 p-3 text-[11px] text-muted-foreground num">
-        ({formatMoney(plan.monthlyAmount, plan.currency)} ÷{" "}
-        {calc.totalWorkingDays}) × {calc.partWorkingDays} ={" "}
-        {formatMoney(calc.amount, plan.currency)}
-      </div>
+      <SalaryPartFormula
+        plan={plan}
+        part={part}
+        calc={calc}
+        className="rounded-xl bg-muted/40 p-3"
+      />
     </div>
   );
 }

@@ -16,11 +16,17 @@ import { Separator } from "@/components/ui/separator";
 import { BottomSheet } from "@/components/ui/bottom-sheet";
 import { Icon } from "@/components/ui/icon";
 import { EmptyState } from "@/components/ui/empty-state";
+import { SectionHelpButton } from "@/components/shared/SectionHelpButton";
 import { TaxCalculator } from "@/components/shared/TaxCalculator";
 import { CurrencySelector } from "@/components/shared/CurrencySelector";
 import { useConvertToBase } from "@/hooks/useConvertToBase";
 import { useIncomes, useSalaryPlans } from "@/hooks/useData";
 import { useSettings } from "@/stores/useSettings";
+import {
+  incomeBonusAmount,
+  incomeGross,
+  incomeTaxAmount,
+} from "@/features/income/amounts";
 import {
   createIncome,
   deleteIncome,
@@ -97,14 +103,10 @@ export function IncomePage() {
       (i) => i.date >= start && i.date <= end,
     );
     const gross = sum(
-      monthIncomes.map((i) => convertToBase(i.amount, i.currency)),
+      monthIncomes.map((i) => convertToBase(incomeGross(i), i.currency)),
     );
     const tax = sum(
-      monthIncomes
-        .filter((i) => i.taxEnabled)
-        .map((i) =>
-          convertToBase((i.amount * i.taxRate) / 100, i.currency),
-        ),
+      monthIncomes.map((i) => convertToBase(incomeTaxAmount(i), i.currency)),
     );
     return { gross, tax, net: gross - tax, count: monthIncomes.length };
   }, [incomes, convertToBase]);
@@ -151,10 +153,17 @@ export function IncomePage() {
 
       <section className="space-y-2">
         <div className="flex items-center justify-between gap-3">
-          <div>
-            <h2 className="text-sm font-semibold">
-              {t("salary_plan.section_title")}
-            </h2>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-1">
+              <h2 className="text-sm font-semibold">
+                {t("salary_plan.section_title")}
+              </h2>
+              <SectionHelpButton
+                title={t("salary_plan.help.title")}
+                description={t("salary_plan.help.body")}
+                ariaLabel={t("salary_plan.help.aria_label")}
+              />
+            </div>
             <p className="text-xs text-muted-foreground">
               {t("salary_plan.section_caption")}
             </p>
@@ -222,13 +231,22 @@ export function IncomePage() {
                         {i.source || t(`income.types.${i.type}`)}
                       </span>
                       <span className="num text-sm font-semibold">
-                        +{formatMoney(i.amount, i.currency)}
+                        +{formatMoney(incomeGross(i), i.currency)}
                       </span>
                     </div>
                     <div className="flex items-center justify-between text-xs text-muted-foreground gap-3">
-                      <span>
+                      <span className="min-w-0 truncate">
                         {t(`income.types.${i.type}`)} ·{" "}
                         {shortDateLabel(i.date)}
+                        {incomeBonusAmount(i) > 0
+                          ? ` · ${t("income.list_with_bonus", {
+                              salary: formatMoney(i.amount, i.currency),
+                              bonus: formatMoney(
+                                incomeBonusAmount(i),
+                                i.currency,
+                              ),
+                            })}`
+                          : ""}
                         {i.recurring
                           ? ` · ${t(`income.recurrence.${i.recurring}`)}`
                           : ""}
@@ -237,7 +255,7 @@ export function IncomePage() {
                         <span className="text-warning">
                           {t("income.tax_minus_short", {
                             amount: formatMoney(
-                              (i.amount * i.taxRate) / 100,
+                              incomeTaxAmount(i),
                               i.currency,
                             ),
                           })}
@@ -377,6 +395,7 @@ export function IncomePage() {
 
 interface IncomeDraft {
   amount: number;
+  bonusAmount?: number;
   currency: Currency;
   source: string;
   type: IncomeType;
@@ -406,6 +425,9 @@ function IncomeForm({
   const defaultTax = useSettings((s) => s.settings.defaultTaxRate);
   const [type, setType] = useState<IncomeType>(initial?.type ?? "salary");
   const [amount, setAmount] = useState(initial?.amount?.toString() ?? "");
+  const [bonus, setBonus] = useState(
+    initial?.bonusAmount ? String(initial.bonusAmount) : "",
+  );
   const [currency, setCurrency] = useState<Currency>(
     initial?.currency ?? defaultCurrency,
   );
@@ -423,7 +445,10 @@ function IncomeForm({
   const [note, setNote] = useState(initial?.note ?? "");
 
   const numericAmount = Number(amount) || 0;
-  const canSubmit = numericAmount > 0;
+  const numericBonus =
+    type === "salary" ? Math.max(0, Number(bonus) || 0) : 0;
+  const grossAmount = numericAmount + numericBonus;
+  const canSubmit = grossAmount > 0;
 
   return (
     <div className="space-y-4">
@@ -437,7 +462,10 @@ function IncomeForm({
               onClick={() => {
                 setType(it.value);
                 if (it.value === "salary" && !taxEnabled) setTaxEnabled(true);
-                if (it.value !== "salary") setTaxEnabled(false);
+                if (it.value !== "salary") {
+                  setTaxEnabled(false);
+                  setBonus("");
+                }
               }}
               className={cn(
                 "flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium tap",
@@ -453,26 +481,63 @@ function IncomeForm({
         </div>
       </div>
 
-      <div className="grid grid-cols-[1fr_auto] gap-3">
-        <div>
-          <Label>{t("income.label_amount")}</Label>
-          <Input
-            className="mt-2"
-            type="number"
-            inputMode="decimal"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            placeholder={t("income.placeholder_amount")}
-            autoFocus
-          />
-        </div>
-        <div className="flex flex-col">
-          <Label>{t("income.label_currency")}</Label>
-          <div className="mt-2">
-            <CurrencySelector value={currency} onValueChange={setCurrency} />
+      {type === "salary" ? (
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <Label>{t("income.label_salary_amount")}</Label>
+            <Input
+              className="mt-2"
+              type="number"
+              inputMode="decimal"
+              min={0}
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              placeholder={t("income.placeholder_amount")}
+              autoFocus
+            />
+          </div>
+          <div>
+            <Label>{t("income.label_bonus")}</Label>
+            <Input
+              className="mt-2"
+              type="number"
+              inputMode="decimal"
+              min={0}
+              value={bonus}
+              onChange={(e) => setBonus(e.target.value)}
+              placeholder={t("income.placeholder_bonus")}
+            />
+          </div>
+          <div className="col-span-2">
+            <Label>{t("income.label_currency")}</Label>
+            <div className="mt-2">
+              <CurrencySelector value={currency} onValueChange={setCurrency} />
+            </div>
           </div>
         </div>
-      </div>
+      ) : (
+        <div className="grid grid-cols-[1fr_auto] gap-3">
+          <div>
+            <Label>{t("income.label_amount")}</Label>
+            <Input
+              className="mt-2"
+              type="number"
+              inputMode="decimal"
+              min={0}
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              placeholder={t("income.placeholder_amount")}
+              autoFocus
+            />
+          </div>
+          <div className="flex flex-col">
+            <Label>{t("income.label_currency")}</Label>
+            <div className="mt-2">
+              <CurrencySelector value={currency} onValueChange={setCurrency} />
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-2 gap-3">
         <div>
@@ -521,7 +586,7 @@ function IncomeForm({
       </div>
 
       <TaxCalculator
-        gross={numericAmount}
+        gross={grossAmount}
         enabled={taxEnabled}
         onEnabledChange={setTaxEnabled}
         taxRate={taxRate}
@@ -566,6 +631,7 @@ function IncomeForm({
           onClick={() =>
             onSubmit({
               amount: numericAmount,
+              bonusAmount: numericBonus,
               currency,
               source,
               type,

@@ -11,6 +11,7 @@ const titleKeyMap: Record<string, string> = {
   "/goals": "topbar.titles.goals",
   "/subscriptions": "topbar.titles.subscriptions",
   "/analytics": "topbar.titles.analytics",
+  "/basics": "topbar.titles.basics",
   "/income": "topbar.titles.income",
   "/budget": "topbar.titles.budget",
   "/categories": "topbar.titles.categories",

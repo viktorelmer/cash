@@ -1,6 +1,7 @@
 import { Bot, ExternalLink, HardDrive, Scale, Wifi } from "lucide-react";
 import { BottomSheet } from "@/components/ui/bottom-sheet";
 import { Button } from "@/components/ui/button";
+import { LanguageSelector } from "@/components/shared/LanguageSelector";
 import { useSettings } from "@/stores/useSettings";
 import { useT } from "@/i18n";
 import { REPOSITORY_URL } from "@/lib/appMeta";
@@ -12,6 +13,8 @@ interface DisclaimerSheetProps {
 
 export function DisclaimerSheet({ open, onAccepted }: DisclaimerSheetProps) {
   const t = useT();
+  const language = useSettings((s) => s.settings.language);
+  const setLanguage = useSettings((s) => s.setLanguage);
   const acceptDisclaimer = useSettings((s) => s.acceptDisclaimer);
 
   const handleAccept = async () => {
@@ -32,6 +35,11 @@ export function DisclaimerSheet({ open, onAccepted }: DisclaimerSheetProps) {
           <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-muted">
             <Bot className="h-7 w-7 text-foreground" />
           </div>
+        </div>
+
+        <div className="flex items-center justify-between gap-3 rounded-2xl border border-border bg-muted/30 px-4 py-3">
+          <span className="text-sm font-medium">{t("disclaimer.language")}</span>
+          <LanguageSelector value={language} onValueChange={setLanguage} />
         </div>
 
         <ul className="space-y-3 text-sm text-muted-foreground">

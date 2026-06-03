@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { ArrowDownRight, ArrowUpRight, Wallet } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { incomeGross, incomeTaxAmount } from "@/features/income/amounts";
 import { sum } from "@/lib/utils";
 import { useConvertToBase } from "@/hooks/useConvertToBase";
 import { useMonthExpenses, useMonthIncomes } from "@/hooks/useData";
@@ -27,13 +28,11 @@ export function MonthlySummary({
   const { convertToBase } = useConvertToBase();
 
   const stats = useMemo(() => {
-    const gross = sum(incomes.map((i) => convertToBase(i.amount, i.currency)));
+    const gross = sum(
+      incomes.map((i) => convertToBase(incomeGross(i), i.currency)),
+    );
     const tax = sum(
-      incomes
-        .filter((i) => i.taxEnabled)
-        .map((i) =>
-          convertToBase((i.amount * i.taxRate) / 100, i.currency),
-        ),
+      incomes.map((i) => convertToBase(incomeTaxAmount(i), i.currency)),
     );
     const net = gross - tax;
     const spent = sum(

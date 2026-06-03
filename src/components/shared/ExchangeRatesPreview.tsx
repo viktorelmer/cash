@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { SectionHelpButton } from "@/components/shared/SectionHelpButton";
 import { SUPPORTED_CURRENCIES } from "@/lib/exchange";
 import { useT } from "@/i18n";
 import { cn } from "@/lib/utils";
@@ -35,8 +36,16 @@ export function ExchangeRatesPreview({
 
   return (
     <div className={cn("space-y-2", className)}>
-      <div className="text-xs font-medium text-foreground">
-        {t("settings.exchange_rates_preview", { base })}
+      <div className="flex items-center gap-1">
+        <span className="text-xs font-medium text-foreground">
+          {t("settings.exchange_rates_preview", { base })}
+        </span>
+        <SectionHelpButton
+          icon="alert"
+          title={t("settings.exchange_rates_help.title")}
+          description={t("settings.exchange_rates_help.body")}
+          ariaLabel={t("settings.exchange_rates_help.aria_label")}
+        />
       </div>
       <div className="grid grid-cols-1 gap-1 sm:grid-cols-2">
         {rows.map(({ quote, rate }) => (

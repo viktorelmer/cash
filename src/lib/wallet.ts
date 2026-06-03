@@ -1,10 +1,10 @@
 import type { AppSettings, Currency, Expense, Income } from "@/types";
+import { incomeNetAmount } from "@/features/income/amounts";
 import { convertAmount } from "@/lib/exchange";
 import { sum } from "@/lib/utils";
 
 export function netIncomeAmount(income: Income): number {
-  if (!income.taxEnabled) return income.amount;
-  return income.amount - (income.amount * income.taxRate) / 100;
+  return incomeNetAmount(income);
 }
 
 function toBase(

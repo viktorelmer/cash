@@ -8,6 +8,7 @@ import { SubscriptionsPage } from "@/pages/SubscriptionsPage";
 import { IncomePage } from "@/pages/IncomePage";
 import { BudgetPage } from "@/pages/BudgetPage";
 import { CategoriesPage } from "@/pages/CategoriesPage";
+import { BasicsPage } from "@/pages/BasicsPage";
 import { SettingsPage } from "@/pages/SettingsPage";
 import { useT } from "@/i18n";
 
@@ -44,6 +45,7 @@ export const router = createBrowserRouter(
             </Suspense>
           ),
         },
+        { path: "basics", element: <BasicsPage /> },
         { path: "income", element: <IncomePage /> },
         { path: "budget", element: <BudgetPage /> },
         { path: "categories", element: <CategoriesPage /> },

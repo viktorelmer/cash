@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
 import {
   AlertTriangle,
-  ChevronRight,
   DatabaseBackup,
   Download,
   Info,
@@ -12,7 +10,6 @@ import {
   Repeat,
   Settings2,
   Sun,
-  Tags,
   Trash2,
   Upload,
   Wallet,
@@ -293,29 +290,6 @@ export function SettingsPage() {
       </Card>
 
       <Card>
-        <CardContent className="p-2">
-          <NavRow
-            to="/income"
-            icon={Wallet}
-            title={t("settings.nav.income")}
-            description={t("settings.nav.income_caption")}
-          />
-          <NavRow
-            to="/budget"
-            icon={Wallet}
-            title={t("settings.nav.budget")}
-            description={t("settings.nav.budget_caption")}
-          />
-          <NavRow
-            to="/categories"
-            icon={Tags}
-            title={t("settings.nav.categories")}
-            description={t("settings.nav.categories_caption")}
-          />
-        </CardContent>
-      </Card>
-
-      <Card>
         <CardContent className="p-5 space-y-4">
           <SectionHeading
             icon={DatabaseBackup}
@@ -418,32 +392,3 @@ function SettingRow({
   );
 }
 
-function NavRow({
-  to,
-  icon: Icon,
-  title,
-  description,
-}: {
-  to: string;
-  icon: typeof Sun;
-  title: string;
-  description: string;
-}) {
-  return (
-    <Link
-      to={to}
-      className="flex items-center gap-3 rounded-xl p-3 tap hover:bg-secondary/50"
-    >
-      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted">
-        <Icon className="h-4 w-4" />
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="text-sm font-medium">{title}</div>
-        <div className="text-xs text-muted-foreground truncate">
-          {description}
-        </div>
-      </div>
-      <ChevronRight className="h-4 w-4 text-muted-foreground" />
-    </Link>
-  );
-}

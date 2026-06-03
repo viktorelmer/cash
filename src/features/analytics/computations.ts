@@ -1,4 +1,5 @@
 import type { Currency, Expense, Income } from "@/types";
+import { incomeGross, incomeTaxAmount } from "@/features/income/amounts";
 import { sum } from "@/lib/utils";
 import {
   endOfMonth,
@@ -34,12 +35,10 @@ export function buildMonthSummary(
     monthExpenses.map((e) => toBase(e.amount, e.currency)),
   );
   const grossIncome = sum(
-    monthIncomes.map((i) => toBase(i.amount, i.currency)),
+    monthIncomes.map((i) => toBase(incomeGross(i), i.currency)),
   );
   const tax = sum(
-    monthIncomes
-      .filter((i) => i.taxEnabled)
-      .map((i) => toBase((i.amount * i.taxRate) / 100, i.currency)),
+    monthIncomes.map((i) => toBase(incomeTaxAmount(i), i.currency)),
   );
   return {
     start,
@@ -141,14 +140,8 @@ export function buildMonthlyTrend(
       date: start,
       spent: sum(monthExp.map((e) => toBase(e.amount, e.currency))),
       income:
-        sum(monthInc.map((i2) => toBase(i2.amount, i2.currency))) -
-        sum(
-          monthInc
-            .filter((i2) => i2.taxEnabled)
-            .map((i2) =>
-              toBase((i2.amount * i2.taxRate) / 100, i2.currency),
-            ),
-        ),
+        sum(monthInc.map((i2) => toBase(incomeGross(i2), i2.currency))) -
+        sum(monthInc.map((i2) => toBase(incomeTaxAmount(i2), i2.currency))),
     });
   }
   return out;

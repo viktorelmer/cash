@@ -2,6 +2,7 @@ import { Briefcase, CalendarClock, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useFormatMoney, useT } from "@/i18n";
 import type { SalaryPart, SalaryPlan } from "@/types";
+import { SalaryPartFormula, formatPlanMonthlySummary } from "./SalaryPartFormula";
 import { calculateSalaryPart, nextPaymentDateFor } from "./salaryPlan";
 import { cn } from "@/lib/utils";
 
@@ -31,7 +32,7 @@ export function SalaryPlanCard({
               {plan.name || t("income.types.salary")}
             </div>
             <div className="text-xs text-muted-foreground truncate">
-              {formatMoney(plan.monthlyAmount, plan.currency)} ·{" "}
+              {formatPlanMonthlySummary(plan, formatMoney, t)} ·{" "}
               {t("income.this_month")}
             </div>
           </div>
@@ -102,9 +103,8 @@ function PartRow({
             ·{" "}
             {t("salary_plan.summary_pays_on", { day: part.paymentDay })}
           </div>
-          <div className="text-[11px] text-muted-foreground/80 mt-0.5 num">
-            {formatMoney(plan.monthlyAmount, plan.currency)} ÷{" "}
-            {calc.totalWorkingDays} × {calc.partWorkingDays}
+          <div className="mt-0.5">
+            <SalaryPartFormula plan={plan} part={part} calc={calc} />
           </div>
         </div>
       </div>

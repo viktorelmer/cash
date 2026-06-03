@@ -11,6 +11,7 @@ export async function createIncome(draft: IncomeDraft): Promise<Income> {
   const income: Income = {
     id: draft.id ?? uid("inc"),
     amount: Number(draft.amount),
+    bonusAmount: Math.max(0, Number(draft.bonusAmount ?? 0)),
     currency: draft.currency,
     source: draft.source,
     type: draft.type,

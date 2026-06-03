@@ -45,6 +45,8 @@ export interface Expense {
 export interface Income {
   id: ID;
   amount: number;
+  /** Optional bonus on top of `amount` (mainly for salary income). */
+  bonusAmount?: number;
   currency: Currency;
   source: string;
   type: IncomeType;
@@ -128,12 +130,16 @@ export interface SalaryPart {
   periodMonthOffset: number; // -1 = previous month, 0 = current month
   periodStartDay: number; // 1-31
   periodEndDay: number; // 1-31, clamped to month length
+  /** Fixed bonus for this payment only (not pro-rated by working days). */
+  bonusAmount?: number;
 }
 
 export interface SalaryPlan {
   id: ID;
   name: string; // company / source label
-  monthlyAmount: number; // gross monthly
+  monthlyAmount: number; // gross monthly salary (base)
+  /** @deprecated Legacy plan-level bonus; migrated to `parts[].bonusAmount`. */
+  bonusAmount?: number;
   currency: Currency;
   taxEnabled: boolean;
   taxRate: number;

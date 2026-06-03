@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { useFormatMoney, useShortDateLabel, useT } from "@/i18n";
 import { isoDate, isoToTimestamp } from "@/lib/date";
 import type { SalaryPart, SalaryPlan } from "@/types";
+import { SalaryPartFormula } from "./SalaryPartFormula";
 import { calculateSalaryPart } from "./salaryPlan";
 
 interface LogSalaryPaymentFormProps {
@@ -58,11 +59,7 @@ export function LogSalaryPaymentForm({
           {t("salary_plan.log_period_label")}: {shortDate(calc.periodStart)}{" "}
           – {shortDate(calc.periodEnd)}
         </div>
-        <div className="text-[11px] text-muted-foreground num pt-1">
-          ({formatMoney(plan.monthlyAmount, plan.currency)} ÷{" "}
-          {calc.totalWorkingDays}) × {calc.partWorkingDays} ={" "}
-          {formatMoney(calc.amount, plan.currency)}
-        </div>
+        <SalaryPartFormula plan={plan} part={part} calc={calc} className="pt-1" />
       </div>
 
       <div className="grid grid-cols-2 gap-3">

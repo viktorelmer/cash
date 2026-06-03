@@ -7,9 +7,15 @@ export const en = {
   nav: {
     home: "Home",
     expenses: "Expenses",
+    income: "Income",
     goals: "Goals",
     subscriptions: "Subs",
+    basics: "Basics",
     insights: "Insights",
+  },
+  basics: {
+    title: "Basics",
+    description: "Budget limits and spending categories.",
   },
   topbar: {
     titles: {
@@ -18,6 +24,7 @@ export const en = {
       goals: "Goals",
       subscriptions: "Subscriptions",
       analytics: "Insights",
+      basics: "Basics",
       income: "Income",
       budget: "Budget",
       categories: "Categories",
@@ -239,6 +246,9 @@ export const en = {
     edit_title: "Edit income",
     label_type: "Type",
     label_amount: "Amount",
+    label_salary_amount: "Salary",
+    label_bonus: "Bonus",
+    placeholder_bonus: "0",
     label_currency: "Currency",
     label_source: "Source",
     label_date: "Date",
@@ -262,6 +272,7 @@ export const en = {
       biweekly: "Bi-weekly",
       yearly: "Yearly",
     },
+    list_with_bonus: "{salary} + {bonus} bonus",
     tax_minus_short: "−{amount} tax",
     toast_added: "Income added",
     toast_updated: "Income updated",
@@ -276,9 +287,16 @@ export const en = {
     delete_confirm: "Delete this salary plan?",
     label_name: "Source",
     placeholder_name: "Salary",
-    label_monthly: "Monthly amount",
+    label_monthly: "Monthly salary",
     placeholder_monthly: "1000",
+    label_part_bonus: "Bonus for this period",
+    placeholder_bonus: "0",
+    part_bonus_hint:
+      "Optional fixed amount added only to this payment (not split by working days).",
+    formula_part_bonus: "bonus",
     label_currency: "Currency",
+    summary_monthly_gross: "{salary} + {bonus} = {total}",
+    formula_split: "Salary {salary} · Bonus {bonus}",
     label_note: "Note",
     placeholder_note: "Optional",
     parts_title: "Payments",
@@ -314,7 +332,13 @@ export const en = {
     toast_plan_deleted: "Salary plan deleted",
     toast_payment_logged: "Salary payment added",
     explainer:
-      "Amount = (monthly amount ÷ working days in covered month) × working days inside the period.",
+      "Salary part = monthly salary ÷ working days in covered month × working days in the period. Add a per-payment bonus if needed — it is not split by days.",
+    help: {
+      title: "How salary plans work",
+      aria_label: "How does the salary plan work?",
+      body:
+        "A salary plan splits your monthly salary into one or more payments — for example, twice a month (advance + main pay).\n\nFor each payment you configure:\n• Payment day — when money arrives on your account\n• Covered period — which calendar days this payment is for (from day … to day …)\n• Period month — whether that period falls in the previous or current month\n\nThe salary portion is calculated automatically:\nmonthly salary ÷ working days in that month × working days in your period.\nOnly Monday–Friday count as working days; weekends are excluded.\n\nYou can add a bonus on a specific payment — a fixed amount for that period only (for example, on the main paycheck). It is not divided across all payments.\n\nWhen you actually receive money, tap «Log payment» on the matching part. This adds an income entry with the calculated amount (you can change it before saving). Nothing is logged automatically — you stay in control.\n\nUse the pencil icon to edit the plan. If tax is enabled in the plan, it is applied when you log a payment.",
+    },
     pause: "Pause",
     resume: "Resume",
     paused: "Paused",
@@ -423,6 +447,12 @@ export const en = {
     exchange_rates_caption:
       "Expenses and income in other currencies are converted to your default currency for totals and balance.",
     exchange_rates_preview: "Current rates (1 {base} =)",
+    exchange_rates_help: {
+      title: "About exchange rates",
+      aria_label: "About exchange rates",
+      body:
+        "Rates are fetched from the public Frankfurter API (api.frankfurter.dev), based on European Central Bank reference data.\n\nThey are indicative mid-market values for estimates only. Your bank or card issuer may use different buy/sell rates, fees, commissions, and rounding — so the amount in your account can differ.\n\nCash uses these rates only to convert foreign-currency expenses and income into your default currency for totals and balance. Your transaction amounts are not sent to Frankfurter.",
+    },
     theme: "Theme",
     themes: {
       system: "System",
@@ -509,6 +539,7 @@ export const en = {
   disclaimer: {
     title: "Before you start",
     description: "A quick note about this app",
+    language: "Language",
     point_ai:
       "Cash was built entirely with AI assistance. Review the code yourself before trusting it with real finances.",
     point_source: "Source code is available in the repository:",

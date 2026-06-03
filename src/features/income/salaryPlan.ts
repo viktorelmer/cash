@@ -31,6 +31,7 @@ export async function createSalaryPlan(
       periodMonthOffset: p.periodMonthOffset,
       periodStartDay: clampDay(p.periodStartDay),
       periodEndDay: clampDay(p.periodEndDay),
+      bonusAmount: Math.max(0, Number(p.bonusAmount ?? 0)),
     })),
     note: draft.note ?? "",
     active: draft.active ?? true,
@@ -50,6 +51,7 @@ export async function updateSalaryPlan(
     updatedAt: Date.now(),
   };
   if (patch.parts) {
+    next.bonusAmount = 0;
     next.parts = patch.parts.map((p) => ({
       id: p.id || uid("salp"),
       label: p.label,
@@ -57,6 +59,7 @@ export async function updateSalaryPlan(
       periodMonthOffset: p.periodMonthOffset,
       periodStartDay: clampDay(p.periodStartDay),
       periodEndDay: clampDay(p.periodEndDay),
+      bonusAmount: Math.max(0, Number(p.bonusAmount ?? 0)),
     }));
   }
   await db.salaryPlans.update(id, next);
@@ -96,8 +99,41 @@ export function workingDaysInMonth(year: number, month: number): number {
   return workingDaysInRange(year, month, 1, lastDayOfMonth(year, month));
 }
 
+export function partBonusAmount(part: SalaryPart): number {
+  return Math.max(0, part.bonusAmount ?? 0);
+}
+
+/** Sum of per-payment bonuses configured on parts. */
+export function planPartsBonusTotal(plan: SalaryPlan): number {
+  const fromParts = plan.parts.reduce((s, p) => s + partBonusAmount(p), 0);
+  if (fromParts > 0) return fromParts;
+  return Math.max(0, plan.bonusAmount ?? 0);
+}
+
+export function planMonthlyGross(plan: SalaryPlan): number {
+  return plan.monthlyAmount + planPartsBonusTotal(plan);
+}
+
+/** Moves legacy plan-level bonus onto the last payment part. */
+export function normalizeSalaryPlan(plan: SalaryPlan): SalaryPlan {
+  const legacy = Math.max(0, plan.bonusAmount ?? 0);
+  if (legacy <= 0 || plan.parts.some((p) => partBonusAmount(p) > 0)) {
+    return plan;
+  }
+  const last = plan.parts.length - 1;
+  if (last < 0) return plan;
+  return {
+    ...plan,
+    parts: plan.parts.map((p, i) =>
+      i === last ? { ...p, bonusAmount: legacy } : p,
+    ),
+  };
+}
+
 export interface SalaryPartCalculation {
   amount: number;
+  salaryAmount: number;
+  bonusAmount: number;
   totalWorkingDays: number;
   partWorkingDays: number;
   periodYear: number;
@@ -133,9 +169,13 @@ export function calculateSalaryPart(
     endDay,
   );
   const ratio = totalWorkingDays > 0 ? partWorkingDays / totalWorkingDays : 0;
-  const amount = Math.round(plan.monthlyAmount * ratio * 100) / 100;
+  const salaryAmount = Math.round(plan.monthlyAmount * ratio * 100) / 100;
+  const bonusAmount = partBonusAmount(part);
+  const amount = Math.round((salaryAmount + bonusAmount) * 100) / 100;
   return {
     amount,
+    salaryAmount,
+    bonusAmount,
     totalWorkingDays,
     partWorkingDays,
     periodYear,
@@ -196,8 +236,11 @@ export async function logSalaryPayment({
   note,
 }: LogPaymentArgs) {
   const type: IncomeType = "salary";
+  const calc = calculateSalaryPart(plan, part, paymentDate);
+  const matchesCalc = Math.abs(amount - calc.amount) < 0.01;
   return createIncome({
-    amount,
+    amount: matchesCalc ? calc.salaryAmount : amount,
+    bonusAmount: matchesCalc ? calc.bonusAmount : 0,
     currency: plan.currency,
     source: source ?? plan.name,
     type,

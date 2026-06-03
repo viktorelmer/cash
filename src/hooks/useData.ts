@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { endOfMonth, startOfMonth } from "@/lib/date";
 import { useConvertToBase } from "@/hooks/useConvertToBase";
 import { monthlyCostOf } from "@/lib/date";
+import { normalizeSalaryPlan } from "@/features/income/salaryPlan";
 import { sum } from "@/lib/utils";
 import type {
   BudgetLimit,
@@ -153,7 +154,12 @@ export function useMonthIncomes(date: Date = new Date()): Income[] {
 export function useSalaryPlans(): SalaryPlan[] {
   return (
     useLiveQuery(
-      () => db.salaryPlans.orderBy("createdAt").reverse().toArray(),
+      () =>
+        db.salaryPlans
+          .orderBy("createdAt")
+          .reverse()
+          .toArray()
+          .then((plans) => plans.map(normalizeSalaryPlan)),
       [],
       [],
     ) ?? []
